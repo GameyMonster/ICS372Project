@@ -1,4 +1,4 @@
-package org.oobook.grocerystore.interfaces;
+package edu.ics372.grocerystore.interfaces;
 
 /**
  * 

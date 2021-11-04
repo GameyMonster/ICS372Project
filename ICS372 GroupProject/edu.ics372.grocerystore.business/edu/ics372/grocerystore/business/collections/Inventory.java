@@ -1,11 +1,11 @@
-package org.oobook.grocerystore.business.collections;
+package edu.ics372.grocerystore.business.collections;
 
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.oobook.grocerystore.business.entities.Product;
+import edu.ics372.grocerystore.business.entities.Product;
 
 public class Inventory implements Iterable<Product>, Serializable {
 	private static final long serialVersionUID = 1L;

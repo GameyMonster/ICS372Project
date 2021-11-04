@@ -1,11 +1,11 @@
-package org.oobook.grocerystore.business.collections;
+package edu.ics372.grocerystore.business.collections;
 
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.oobook.grocerystore.business.entities.Transaction;
+import edu.ics372.grocerystore.business.entities.Transaction;
 
 public class TransactionList {
 	private List<Transaction> transactions = new LinkedList<Transaction>();

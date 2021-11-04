@@ -1,4 +1,4 @@
-package org.oobook.grocerystore.business.entities;
+package edu.ics372.grocerystore.business.entities;
 
 import java.util.Iterator;
 import java.util.LinkedList;

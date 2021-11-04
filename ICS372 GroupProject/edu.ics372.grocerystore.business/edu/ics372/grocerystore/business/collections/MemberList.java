@@ -1,10 +1,10 @@
-package org.oobook.grocerystore.business.collections;
+package edu.ics372.grocerystore.business.collections;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.oobook.grocerystore.business.entities.Member;
+import edu.ics372.grocerystore.business.entities.Member;
 
 public class MemberList {
 	private List<Member> members = new LinkedList<Member>();
