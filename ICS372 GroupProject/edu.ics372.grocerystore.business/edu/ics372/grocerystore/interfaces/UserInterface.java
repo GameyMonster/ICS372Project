@@ -31,9 +31,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.oobook.grocerystore.business.facade.GroceryStore;
-import org.oobook.grocerystore.business.facade.Request;
-import org.oobook.grocerystore.business.facade.Result;
+import edu.ics372.grocerystore.business.facade.GroceryStore;
+import edu.ics372.grocerystore.business.facade.Request;
+import edu.ics372.grocerystore.business.facade.Result;
 
 public class UserInterface {
 	private static UserInterface userInterface;

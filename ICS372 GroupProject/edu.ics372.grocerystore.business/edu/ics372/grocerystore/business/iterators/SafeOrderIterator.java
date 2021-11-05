@@ -3,9 +3,8 @@ package edu.ics372.grocerystore.business.iterators;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.oobook.grocerystore.business.facade.Result;
-
 import edu.ics372.grocerystore.business.entities.Order;
+import edu.ics372.grocerystore.business.facade.Result;
 
 public class SafeOrderIterator implements Iterator<Result> {
 	private Iterator<Order> iterator;

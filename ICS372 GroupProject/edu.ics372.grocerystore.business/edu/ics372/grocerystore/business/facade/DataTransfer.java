@@ -1,4 +1,4 @@
-package org.oobook.grocerystore.business.facade;
+package edu.ics372.grocerystore.business.facade;
 
 import edu.ics372.grocerystore.business.entities.Member;
 import edu.ics372.grocerystore.business.entities.Order;

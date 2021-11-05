@@ -1,4 +1,4 @@
-package org.oobook.grocerystore.business.facade;
+package edu.ics372.grocerystore.business.facade;
 
 public class Result extends DataTransfer {
 	public static final int OPERATION_COMPLETED = 0;
