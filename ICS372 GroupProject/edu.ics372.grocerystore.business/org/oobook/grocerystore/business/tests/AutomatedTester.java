@@ -12,12 +12,13 @@ public class AutomatedTester {
 	private final String[] phones = { "p1", "p2", "p3", "p4", "p5", "p6", "p7" };
 	private final double[] fees = { 1.00, 2.20, 3.10, 4.56, 5.33, 6.99, 7.65 };
 	private final Member[] members = new Member[7];
-	private final String[] membersID = { "i1", "i2", "i3", "i4", "i5", "i6" };
-	private final String[] productName = { "product1", "product2", "product3", "product4" };
-	private final String[] productID = { "p1", "p2", "p3", "p4", "p5" };;
-	private final String[] productPrice = { "2.50", "30.00", "16.10" };
-	private final String[] newPrice = { "6.99", "2.00", "20.15" };
-	private final String[] reOrderLevel = { "22", "16", "50" };
+	private final String[] membersID = { "i1", "i2", "i3", "i4", "i5", "i6", "i7" };
+	private final String[] productName = { "product1", "product2", "product3", "product4", "product5", "product6",
+			"product7" };
+	private final String[] productID = { "p1", "p2", "p3", "p4", "p5", "p6", "p7" };;
+	private final String[] productPrice = { "2.50", "30.00", "16.10", "21.50", "16.99", "2.99", "19.99" };
+	private final String[] newPrice = { "6.99", "2.00", "20.15", "12.00", "0.99", "5.13", "14.69" };
+	private final String[] reOrderLevel = { "22", "16", "50", "2", "15", "25", "33" };
 
 	/**
 	 * Create members and assert that they were created correctly.
