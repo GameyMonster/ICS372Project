@@ -7,10 +7,18 @@ public class Request extends DataTransfer {
 	private Calendar startDate;
 	private Calendar endDate;
 
+	/**
+	 * This is a singleton class. Hence the private constructor.
+	 */
 	private Request() {
-		super();
+
 	}
 
+	/**
+	 * Returns the only instance of the class.
+	 * 
+	 * @return the only instance
+	 */
 	public static Request instance() {
 		if (request == null) {
 			request = new Request();

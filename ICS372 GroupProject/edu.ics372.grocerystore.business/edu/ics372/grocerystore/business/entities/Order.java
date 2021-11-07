@@ -1,6 +1,12 @@
 package edu.ics372.grocerystore.business.entities;
 
-public class Order {
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
+public class Order implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private String orderID;
 	private String productID;
 	private Product product;
@@ -8,7 +14,7 @@ public class Order {
 	private static int idCounter = 0;
 
 	/**
-	 * Constructs order, creates unique ID.
+	 * Constructs an order
 	 * 
 	 * @param productID
 	 * @param quantity
@@ -86,9 +92,14 @@ public class Order {
 		this.orderID = orderID;
 	}
 
-	/**
-	 * Constructs string for an order.
-	 */
+	public static void save(ObjectOutputStream output) throws IOException {
+		output.writeObject(idCounter);
+	}
+
+	public static void retrieve(ObjectInputStream input) throws IOException, ClassNotFoundException {
+		idCounter = (int) input.readObject();
+	}
+
 	public String toString() {
 		return "Order: " + orderID + ", product: " + productID + ", " + product.getName() + ", quantity: " + quantity;
 	}

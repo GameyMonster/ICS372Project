@@ -59,7 +59,7 @@ public class UserInterface {
 	private static final int HELP = 15;
 
 	private UserInterface() {
-		if (yesOrNo("Looke for saved data and use it?")) {
+		if (yesOrNo("Look for saved data and use it?")) {
 			retrieve();
 		} else {
 			groceryStore = GroceryStore.instance();
@@ -176,6 +176,7 @@ public class UserInterface {
 		System.out.println(LIST_ALL_PRODUCTS + " to print all products name, id, price, and reorder level");
 		System.out.println(LIST_OUTSTANDING_ORDERS + " to print each order that has not been received yet");
 		System.out.println(SAVE + " to save data");
+		System.out.println(RETRIEVE + " to retrieve the file");
 		System.out.println(HELP + " for help");
 	}
 
@@ -223,6 +224,9 @@ public class UserInterface {
 				break;
 			case LIST_OUTSTANDING_ORDERS:
 				listOutstandingOrders();
+				break;
+			case RETRIEVE:
+				retrieve();
 				break;
 			case SAVE:
 				save();

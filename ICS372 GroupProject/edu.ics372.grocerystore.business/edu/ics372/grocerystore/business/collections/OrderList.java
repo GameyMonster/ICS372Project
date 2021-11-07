@@ -1,12 +1,14 @@
 package edu.ics372.grocerystore.business.collections;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import edu.ics372.grocerystore.business.entities.Order;
 
-public class OrderList {
+public class OrderList implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private List<Order> orders = new LinkedList<Order>();
 	private static OrderList orderList;
 
@@ -20,7 +22,7 @@ public class OrderList {
 	/**
 	 * Returns single object, if it has not been created already.
 	 * 
-	 * @return
+	 * @return instance of a OrderList
 	 */
 	public static OrderList getInstance() {
 		if (orderList == null) {
@@ -30,7 +32,7 @@ public class OrderList {
 	}
 
 	/**
-	 * Add order to list.
+	 * Add order to the cart list.
 	 * 
 	 * @param order
 	 * @return
@@ -41,7 +43,7 @@ public class OrderList {
 	}
 
 	/**
-	 * Removes order from the list, given product ID.
+	 * Removes order from the cart list.
 	 * 
 	 * @param productID
 	 * @return
@@ -56,7 +58,7 @@ public class OrderList {
 	}
 
 	/**
-	 * Returns product object from its order given the product ID.
+	 * Search the product object from the product ID.
 	 * 
 	 * @param productID
 	 * @return
@@ -82,7 +84,8 @@ public class OrderList {
 	}
 
 	/**
-	 * Returns string.
+	 * String form of the list
+	 * 
 	 */
 	public String toString() {
 		return orders.toString();

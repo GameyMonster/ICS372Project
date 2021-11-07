@@ -1,11 +1,16 @@
 package edu.ics372.grocerystore.business.entities;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Member {
+public class Member implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private String id;
 	private String name;
 	private String address;
@@ -19,7 +24,7 @@ public class Member {
 	private static int idCounter;
 
 	/**
-	 * Member constructor
+	 * Create a constructor for the Member
 	 * 
 	 * @param name
 	 * @param address
@@ -126,7 +131,7 @@ public class Member {
 	}
 
 	/**
-	 * check if it is a member
+	 * Check to see if the member is a member
 	 * 
 	 * @return membership
 	 */
@@ -135,7 +140,7 @@ public class Member {
 	}
 
 	/**
-	 * get transaction iterator
+	 * Get the transaction iterator
 	 * 
 	 * @return iterator
 	 */
@@ -144,7 +149,7 @@ public class Member {
 	}
 
 	/**
-	 * method Holder for getTransaction(startDate, endDate): Transaction, will
+	 * Method Holder for getTransaction(startDate, endDate): Transaction, will
 	 * changed when Transaction and TransactionList updated this methods will return
 	 * a list of transactions that the Member had on the date.
 	 * 
@@ -163,8 +168,17 @@ public class Member {
 		return transactionList.listIterator();
 	}
 
+	public static void save(ObjectOutputStream output) throws IOException {
+		output.writeObject(idCounter);
+	}
+
+	public static void retrieve(ObjectInputStream input) throws IOException, ClassNotFoundException {
+		idCounter = (int) input.readObject();
+	}
+
 	/**
-	 * construct a string for displaying member information.
+	 * String form of the member
+	 * 
 	 */
 	@Override
 	public String toString() {

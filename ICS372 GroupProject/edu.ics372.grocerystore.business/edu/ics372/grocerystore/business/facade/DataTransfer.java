@@ -5,7 +5,7 @@ import edu.ics372.grocerystore.business.entities.Order;
 import edu.ics372.grocerystore.business.entities.Product;
 import edu.ics372.grocerystore.business.entities.Transaction;
 
-public class DataTransfer {
+public abstract class DataTransfer {
 	private String memberID;
 	private String memberName;
 	private String memberAddress;
@@ -26,6 +26,9 @@ public class DataTransfer {
 
 	private String orderQuantity;
 
+	/**
+	 * This sets all fields to "none".
+	 */
 	public DataTransfer() {
 		reset();
 	}
@@ -158,6 +161,11 @@ public class DataTransfer {
 		this.orderQuantity = orderQuantity;
 	}
 
+	/**
+	 * Sets all the member-related fields using the Member parameter.
+	 * 
+	 * @param member the Member whose fields should be copied.
+	 */
 	public void setMemberFields(Member member) {
 		memberID = member.getId();
 		memberName = member.getName();
@@ -167,6 +175,11 @@ public class DataTransfer {
 		memberFeePaid = Double.toString(member.getFeePaid());
 	}
 
+	/**
+	 * Sets all the Product-related fields using the Product parameter.
+	 * 
+	 * @param product the Product whose fields should be copied.
+	 */
 	public void setProductFields(Product product) {
 		productName = product.getName();
 		productID = product.getId();
@@ -175,18 +188,31 @@ public class DataTransfer {
 		productStock = Integer.toString(product.getStock());
 	}
 
+	/**
+	 * Sets all the Transaction-related fields using the Transaction parameter.
+	 * 
+	 * @param transaction the Transaction whose fields should be copied.
+	 */
 	public void setTransactionFields(Transaction transaction) {
 		memberID = transaction.getMemberID();
 		transactionDate = transaction.getDate().toString();
 		transactionTotalPrice = Double.toString(transaction.getTotalPrice());
 	}
 
+	/**
+	 * Sets all the orders-related fields using the Order parameter.
+	 * 
+	 * @param order the Order whose fields should be copied.
+	 */
 	public void setOrderFields(Order order) {
 		productID = order.getProduct().getId();
 		productName = order.getProduct().getName();
 		orderQuantity = Integer.toString(order.getQuantity());
 	}
 
+	/**
+	 * Sets all String fields to "none"
+	 */
 	public void reset() {
 		memberID = "Invalid member ID";
 		memberName = "Invalid member name";

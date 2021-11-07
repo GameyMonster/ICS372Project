@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -19,19 +20,28 @@ import edu.ics372.grocerystore.business.entities.Product;
 import edu.ics372.grocerystore.business.entities.ProductList;
 import edu.ics372.grocerystore.business.entities.Transaction;
 
-public class GroceryStore {
+public class GroceryStore implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private MemberList members = MemberList.getInstance();
 	private OrderList orders = OrderList.getInstance();
 	private ProductList products = ProductList.getInstance();
 	private TransactionList transactions = TransactionList.getInstance();
 	private List<Product> checkOutList = new LinkedList<Product>();
-
 	private static GroceryStore groceryStore;
 
+	/**
+	 * Private for the singleton pattern Creates the catalog and member collection
+	 * objects
+	 */
 	private GroceryStore() {
 
 	}
 
+	/**
+	 * Supports the singleton pattern
+	 * 
+	 * @return the singleton object
+	 */
 	public static GroceryStore instance() {
 		if (groceryStore == null) {
 			groceryStore = new GroceryStore();
@@ -40,10 +50,17 @@ public class GroceryStore {
 		return groceryStore;
 	}
 
+	/**
+	 * Organizes the operations for adding a member
+	 * 
+	 * @param name    member name
+	 * @param address member address
+	 * @param phone   member phone
+	 * @param fee     member fee
+	 * @return the Member object created
+	 */
 	public Result addMember(Request request) {
 		Result result = new Result();
-
-		// Attempt to add member to member list
 		Member member = new Member(request.getMemberName(), request.getMemberAddress(), request.getMemberPhoneNumber(),
 				Double.parseDouble(request.getMemberFeePaid()));
 		if (members.insertMember(member)) {
@@ -57,11 +74,18 @@ public class GroceryStore {
 		return result;
 	}
 
+	/**
+	 * Organizes the operations for remove a member
+	 * 
+	 * @param name    member name
+	 * @param address member address
+	 * @param phone   member phone
+	 * @param fee     member fee
+	 * @return the Member object created
+	 */
 	public Result removeMember(Request request) {
 		Result result = new Result();
 		Member member = null;
-
-		// Attempt to remove member
 		result.setMemberID(request.getMemberID());
 		if (!members.isMember(request.getMemberID())) {
 			result.setResultCode(Result.MEMBER_NOT_FOUND);
@@ -75,10 +99,14 @@ public class GroceryStore {
 		return result;
 	}
 
+	/**
+	 * Returns an iterator to the return a member info
+	 * 
+	 * @param request - stores the member id
+	 * @return iterator to the Result objects storing info about issued books
+	 */
 	public Iterator<Result> getMemberInfo(Request request) {
 		List<Result> resultList = new LinkedList<Result>();
-
-		// get list of all members with name entered in request
 		Iterator<Member> memberIterator = members.getMembers();
 		while (memberIterator.hasNext()) {
 			Member member = memberIterator.next();
@@ -93,6 +121,12 @@ public class GroceryStore {
 		return resultList.iterator();
 	}
 
+	/**
+	 * Adding the Product to the system
+	 * 
+	 * @param request
+	 * @return
+	 */
 	public Result addProduct(Request request) {
 
 		Result result = new Result();
@@ -101,8 +135,7 @@ public class GroceryStore {
 				Integer.parseInt(request.getProductReorderLevel()) * 2, Double.parseDouble(request.getProductPrice()));
 		result.setProductFields(product);
 
-		// attempt to add product
-		// check if name is taken
+		// Checking if this product is available
 		if (!products.nameAvailable(request.getProductName())) {
 			result.setResultCode(Result.PRODUCT_NAME_INVALID);
 		} else if (products.insertProduct(product)) {
@@ -114,12 +147,15 @@ public class GroceryStore {
 		return result;
 	}
 
+	/**
+	 * Create a checkout for the member
+	 * 
+	 * @param request
+	 * @return
+	 */
 	public Result createNewCheckout(Request request) {
 		Result result = new Result();
-		// reset checkout list
 		checkOutList = new LinkedList<Product>();
-
-		// verify member exists
 		result.setMemberID(request.getMemberID());
 		if (members.isMember(request.getMemberID())) {
 			result.setResultCode(Result.OPERATION_COMPLETED);
@@ -130,10 +166,14 @@ public class GroceryStore {
 		return result;
 	}
 
+	/**
+	 * Adding the Product To The Checkout
+	 * 
+	 * @param request
+	 * @return
+	 */
 	public Result addProductToCheckout(Request request) {
 		Result result = new Result();
-		// add a single product to groceryStores checkoutList object
-		// check that product exists in productList AND contains enough stock
 		Product product = products.getProductById(request.getProductID());
 		result.setProductID(request.getProductID());
 		result.setProductStock(request.getProductStock());
@@ -145,27 +185,20 @@ public class GroceryStore {
 			result.setProductFields(product);
 			result.setProductStock(request.getProductStock());
 			result.setResultCode(Result.OPERATION_COMPLETED);
-			// TODO
-			// how to add checkout quantity?
-			// create new product and copy fields?
-			// make checkout list two dimensional?
-
-			// I think this would work,i'm creating a new product based on the original
-			// product.
-			// with stock = checkout quantity.
-			// then setId and lastly add the product to checkOutList
 			product = new Product(product.getName(), product.getReorderLevel(),
 					Integer.parseInt(result.getProductStock()), product.getPrice());
 			product.setId(result.getProductID());
 			checkOutList.add(product);
 		}
-		// this product's stock field will be reused as quantity to checkout
-		// check that product exists in productList AND contains enough stock
-		// set result code (PRODUCT_NOT_FOUND, PRODUCT_OUT_OF_STOCK,
-		// OPERATION_COMPLETED)
 		return result;
 	}
 
+	/**
+	 * Creating the list of the product that has been purchased
+	 * 
+	 * @param request
+	 * @return
+	 */
 	public Iterator<Result> completeCheckout(Request request) {
 		List<Result> resultList = new LinkedList<Result>();
 		double total = 0;
@@ -181,9 +214,6 @@ public class GroceryStore {
 						if (orders.addOrder(new Order(product, product.getReorderLevel() * 2))) {
 							result.setResultCode(Result.PRODUCT_REORDERED);
 						} else {
-							// change to product already ordered?
-							// isnt technically a failure for the result because
-							// the transaction is still created and added?
 							result.setResultCode(Result.PRODUCT_ALREADY_ORDERED);
 						}
 					}
@@ -197,24 +227,18 @@ public class GroceryStore {
 			transactions.insertTransaction(transaction);
 			resultList.get(resultList.size() - 1).setTransactionFields(transaction);
 		}
-		// TODO
-		// actor has finished adding products to checkoutList X
-		// ensure list is not empty X
-		// create transaction and add to transaction list X
-		// check reorder level for each product checked out X
-		// if product is reordered make sure to set result code for that product result
-		// X
-		// to PRODUCT_REORDERED X
-		// else set result code based on success X
 		return resultList.iterator();
 	}
 
+	/**
+	 * Get the Product Information on the system
+	 * 
+	 * @param request
+	 * @return
+	 */
 	public Result getProductInfo(Request request) {
 		Result result = new Result();
 
-		// search for product by name
-		// if not found set resultCode to PRODUCT_NOT_FOUND
-		// else set product fields in result and set result code to OPERATION_COMPLETED
 		Product product = products.getProductByName(request.getProductName());
 		if (product == null) {
 			result.setResultCode(Result.PRODUCT_NOT_FOUND);
@@ -226,6 +250,12 @@ public class GroceryStore {
 		return result;
 	}
 
+	/**
+	 * Create a shipment for the product has no more quantity recently
+	 * 
+	 * @param request
+	 * @return
+	 */
 	public Result processShipment(Request request) {
 		Result result = new Result();
 		Product product = products.getProductById(request.getProductID());
@@ -246,22 +276,15 @@ public class GroceryStore {
 		result.setResultCode(Result.OPERATION_COMPLETED);
 		orders.removeOrder(product.getId());
 		result.setProductFields(product);
-
-		// TODO
-		// check that product id exists
-		// if nto set result code to PRODUCT_NOT_FOUND
-		// check if exists in orderList
-		// if not set result code to ORDER_NOT_FOUND
-		// check that quantity received matches order quantity
-		// if nto set result code to INCORRECT_RECIEVED_QUANTITY
-		// update product stock in productList
-		// set result code to OPERATION_COMPLETED
-		// set all product fields in result
-		// REMOVE FROM ORDER LIST
-
 		return result;
 	}
 
+	/**
+	 * Changing the price on the system
+	 * 
+	 * @param request
+	 * @return
+	 */
 	public Result changePrice(Request request) {
 		Result result = new Result();
 		result.setProductID(request.getProductID());
@@ -273,9 +296,6 @@ public class GroceryStore {
 			result.setResultCode(Result.PRODUCT_NOT_FOUND);
 			return result;
 		}
-		// update price in productList
-		// set result code to OPERATION_COMPLETED
-		// set all product fields in result
 		product.setPrice(Double.parseDouble(request.getProductPrice()));
 		result.setResultCode(Result.OPERATION_COMPLETED);
 		result.setProductFields(product);
@@ -283,11 +303,15 @@ public class GroceryStore {
 		return result;
 	}
 
+	/**
+	 * Print all the transaction of the members
+	 * 
+	 * @param request
+	 * @return
+	 */
 	public Iterator<Result> printTransactions(Request request) {
 		List<Result> resultList = new LinkedList<Result>();
-		// TODO
-		// verify member id, if not found create a single result and
-		// set its result code to MEMBER_NOT_FOUND
+
 		Member member = members.getMember(request.getMemberID());
 		if (member == null) {
 			Result result = new Result();
@@ -296,8 +320,7 @@ public class GroceryStore {
 			resultList.add(result);
 			return resultList.iterator();
 		}
-		// verify dates are valid options (start date occurs on or before end date)
-		// if not, create single result and set result code to INVALID_DATES
+		// Get the date from the purchased items
 		Calendar startDate = request.getStartDate();
 		Calendar endDate = request.getEndDate();
 		if (startDate.compareTo(endDate) > 0) {
@@ -307,8 +330,7 @@ public class GroceryStore {
 			resultList.add(result);
 			return resultList.iterator();
 		}
-		// else retrieve list of transactions, create a result for each transaction,
-		// set all relevant fields, and set result code to OPERATION_COMPLETED
+		// Retrieve all the transaction from the member
 		Iterator<Transaction> transactionIterator = transactions.getTransactions(request.getMemberID(), startDate,
 				endDate);
 		while (transactionIterator.hasNext()) {
@@ -322,6 +344,11 @@ public class GroceryStore {
 		return resultList.iterator();
 	}
 
+	/**
+	 * Print all the members on the system
+	 * 
+	 * @return
+	 */
 	public Iterator<Result> listAllMembers() {
 		List<Result> resultList = new LinkedList<Result>();
 		Iterator<Member> iterator = members.getMembers();
@@ -331,12 +358,15 @@ public class GroceryStore {
 			result.setMemberFields(member);
 			resultList.add(result);
 		}
-		// create a list of results corresponding
-		// to each entry in memberList
 
 		return resultList.iterator();
 	}
 
+	/**
+	 * Print all of the Products on the system
+	 * 
+	 * @return
+	 */
 	public Iterator<Result> listAllProducts() {
 		List<Result> resultList = new LinkedList<Result>();
 		Iterator<Product> iterator = products.getIterator();
@@ -352,6 +382,11 @@ public class GroceryStore {
 		return resultList.iterator();
 	}
 
+	/**
+	 * Print all of the Product that hasn't purchased
+	 * 
+	 * @return
+	 */
 	public Iterator<Result> listOutstandingOrders() {
 		List<Result> resultList = new LinkedList<Result>();
 		Iterator<Order> iterator = orders.iterator();
@@ -373,9 +408,6 @@ public class GroceryStore {
 			FileOutputStream file = new FileOutputStream("GroceryStoreData");
 			ObjectOutputStream output = new ObjectOutputStream(file);
 			output.writeObject(groceryStore);
-			// Member.save(output);
-			// TODO
-			// save anything else???
 			output.close();
 			file.close();
 			return true;
@@ -385,14 +417,16 @@ public class GroceryStore {
 		}
 	}
 
+	/**
+	 * Retrieve the save system file
+	 * 
+	 * @return
+	 */
 	public static GroceryStore retrieve() {
 		try {
 			FileInputStream file = new FileInputStream("GroceryStoreData");
 			ObjectInputStream input = new ObjectInputStream(file);
 			groceryStore = (GroceryStore) input.readObject();
-			// Member.retrieve(input);
-			// TODO
-			// retrieve anything that needs to be???
 			input.close();
 			file.close();
 			return groceryStore;

@@ -1,12 +1,14 @@
 package edu.ics372.grocerystore.business.collections;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import edu.ics372.grocerystore.business.entities.Member;
 
-public class MemberList {
+public class MemberList implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private List<Member> members = new LinkedList<Member>();
 	private static MemberList memberList;
 
@@ -40,7 +42,7 @@ public class MemberList {
 	}
 
 	/**
-	 * get data and information of a member given their ID
+	 * Get Members information of a member given their ID
 	 * 
 	 * @param memberId
 	 * @return member, null if there are no member found
@@ -57,17 +59,17 @@ public class MemberList {
 	}
 
 	/**
-	 * @return iterator of a memberList
+	 * @return Iterator of a Member
 	 */
 	public Iterator<Member> getMembers() {
 		return members.listIterator();
 	}
 
 	/**
-	 * remove member from the list given their ID
+	 * Remove member from the List
 	 * 
 	 * @param memberId
-	 * @return true if successful, false if not
+	 * @return true if successful, else false
 	 */
 	public Member removeMember(String memberId) {
 		Iterator<Member> iterator = members.listIterator();
@@ -83,7 +85,7 @@ public class MemberList {
 	}
 
 	/**
-	 * check a member's membership status given their Id
+	 * Check if a member is a member on the list
 	 * 
 	 * @param memberId
 	 * @return true if is a member, false if not.

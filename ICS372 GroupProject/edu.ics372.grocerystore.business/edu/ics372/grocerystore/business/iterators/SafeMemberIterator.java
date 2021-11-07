@@ -28,6 +28,7 @@ public class SafeMemberIterator implements Iterator<Result> {
 	public Result next() {
 		if (iterator.hasNext()) {
 			result.setMemberFields(iterator.next());
+			result.setResultCode(Result.OPERATION_COMPLETED);
 		} else {
 			throw new NoSuchElementException("No such element");
 		}
