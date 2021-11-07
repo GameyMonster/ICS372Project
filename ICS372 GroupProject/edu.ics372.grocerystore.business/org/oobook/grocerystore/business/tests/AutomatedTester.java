@@ -10,7 +10,7 @@ public class AutomatedTester {
 	private final String[] names = { "n1", "n2", "n3", "n4", "n5", "n6", "n7" };
 	private final String[] addresses = { "a1", "a2", "a3", "a4", "a5", "a6", "a7" };
 	private final String[] phones = { "p1", "p2", "p3", "p4", "p5", "p6", "p7" };
-	private final String[] fees = { "1.00", "2.20", "3.10", "4.56", "5.33", "6.99", "7.65" };
+	private final double[] fees = { 1.00, 2.20, 3.10, 4.56, 5.33, 6.99, 7.65 };
 	private final Member[] members = new Member[7];
 	private final String[] membersID = { "i1", "i2", "i3", "i4", "i5", "i6" };
 	private final String[] productName = { "product1", "product2", "product3", "product4" };
@@ -27,13 +27,13 @@ public class AutomatedTester {
 			Request.instance().setMemberAddress(addresses[count]);
 			Request.instance().setMemberName(names[count]);
 			Request.instance().setMemberPhoneNumber(phones[count]);
-			Request.instance().setMemberFeePaid(fees[count]);
+			Request.instance().setMemberFeePaid(Double.toString(fees[count]));
 			Result result = GroceryStore.instance().addMember(Request.instance());
 			assert result.getResultCode() == Result.OPERATION_COMPLETED;
 			assert result.getMemberName().equals(names[count]);
 			assert result.getMemberPhoneNumber().equals(phones[count]);
 			assert result.getMemberAddress().equals(addresses[count]);
-			assert result.getMemberFeePaid().equals((fees[count]));
+			assert result.getMemberFeePaid().equals((Double.toString(fees[count])));
 		}
 	}
 
@@ -47,7 +47,7 @@ public class AutomatedTester {
 			assert result.getMemberName().equals(names[count]);
 			assert result.getMemberAddress().equals(addresses[count]);
 			assert result.getMemberPhoneNumber().equals(phones[count]);
-			assert result.getMemberFeePaid().equals(fees[count]);
+			assert result.getMemberFeePaid().equals((Double.toString(fees[count])));
 		}
 	}
 
@@ -101,7 +101,7 @@ public class AutomatedTester {
 	/**
 	 * Invokes all the test methods.
 	 */
-	public void autoTest() {
+	public void testAll() {
 		testAddMember();
 		testRemoveMember();
 		testAddProduct();
@@ -110,4 +110,7 @@ public class AutomatedTester {
 
 	}
 
+	public static void main(String[] args) {
+		new AutomatedTester().testAll();
+	}
 }

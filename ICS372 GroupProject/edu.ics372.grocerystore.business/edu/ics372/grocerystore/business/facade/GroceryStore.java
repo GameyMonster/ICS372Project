@@ -19,6 +19,9 @@ import edu.ics372.grocerystore.business.entities.Order;
 import edu.ics372.grocerystore.business.entities.Product;
 import edu.ics372.grocerystore.business.entities.ProductList;
 import edu.ics372.grocerystore.business.entities.Transaction;
+import edu.ics372.grocerystore.business.iterators.SafeMemberIterator;
+import edu.ics372.grocerystore.business.iterators.SafeOrderIterator;
+import edu.ics372.grocerystore.business.iterators.SafeProductIterator;
 
 public class GroceryStore implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -85,17 +88,19 @@ public class GroceryStore implements Serializable {
 	 */
 	public Result removeMember(Request request) {
 		Result result = new Result();
-		Member member = null;
-		result.setMemberID(request.getMemberID());
-		if (!members.isMember(request.getMemberID())) {
+		Member member = members.getMember(request.getMemberID());
+		if (member == null) {
 			result.setResultCode(Result.MEMBER_NOT_FOUND);
-		} else if ((member = members.removeMember(request.getMemberID())) != null) {
-			result.setResultCode(Result.OPERATION_COMPLETED);
-			result.setMemberFields(member);
-		} else {
-			result.setResultCode(Result.OPERATION_FAILED);
+			return result;
 		}
 
+		if (members.removeMember(request.getMemberID())) {
+			result.setMemberFields(member);
+			result.setResultCode(Result.OPERATION_COMPLETED);
+			return result;
+		}
+
+		result.setResultCode(Result.OPERATION_FAILED);
 		return result;
 	}
 
@@ -106,19 +111,7 @@ public class GroceryStore implements Serializable {
 	 * @return iterator to the Result objects storing info about issued books
 	 */
 	public Iterator<Result> getMemberInfo(Request request) {
-		List<Result> resultList = new LinkedList<Result>();
-		Iterator<Member> memberIterator = members.getMembers();
-		while (memberIterator.hasNext()) {
-			Member member = memberIterator.next();
-			if (member.getName().equals(request.getMemberName())) {
-				Result result = new Result();
-				result.setMemberFields(member);
-				result.setResultCode(Result.OPERATION_COMPLETED);
-				resultList.add(result);
-			}
-		}
-
-		return resultList.iterator();
+		return new SafeMemberIterator(members.getMembersByName(request.getMemberName()));
 	}
 
 	/**
@@ -130,20 +123,22 @@ public class GroceryStore implements Serializable {
 	public Result addProduct(Request request) {
 
 		Result result = new Result();
-		result.setProductName(request.getProductName());
-		Product product = new Product(request.getProductName(), Integer.parseInt(request.getProductReorderLevel()),
-				Integer.parseInt(request.getProductReorderLevel()) * 2, Double.parseDouble(request.getProductPrice()));
-		result.setProductFields(product);
-
-		// Checking if this product is available
-		if (!products.nameAvailable(request.getProductName())) {
-			result.setResultCode(Result.PRODUCT_NAME_INVALID);
-		} else if (products.insertProduct(product)) {
-			result.setResultCode(Result.OPERATION_COMPLETED);
+		Product product = products.getProductById(request.getProductID());
+		result.setProductID(request.getProductID());
+		result.setProductStock(request.getProductStock());
+		if (!products.isProduct(request.getProductID())) {
+			result.setResultCode(Result.PRODUCT_NOT_FOUND);
+		} else if (!products.hasStock(request.getProductID(), Integer.parseInt(request.getProductStock()))) {
+			result.setResultCode(Result.PRODUCT_OUT_OF_STOCK);
 		} else {
-			result.setResultCode(Result.OPERATION_FAILED);
+			result.setProductFields(product);
+			result.setProductStock(request.getProductStock());
+			result.setResultCode(Result.OPERATION_COMPLETED);
+			product = new Product(product.getName(), product.getReorderLevel(),
+					Integer.parseInt(result.getProductStock()), product.getPrice());
+			product.setId(result.getProductID());
+			checkOutList.add(product);
 		}
-
 		return result;
 	}
 
@@ -350,16 +345,8 @@ public class GroceryStore implements Serializable {
 	 * @return
 	 */
 	public Iterator<Result> listAllMembers() {
-		List<Result> resultList = new LinkedList<Result>();
-		Iterator<Member> iterator = members.getMembers();
-		while (iterator.hasNext()) {
-			Member member = iterator.next();
-			Result result = new Result();
-			result.setMemberFields(member);
-			resultList.add(result);
-		}
+		return new SafeMemberIterator(members.getMembers());
 
-		return resultList.iterator();
 	}
 
 	/**
@@ -368,18 +355,7 @@ public class GroceryStore implements Serializable {
 	 * @return
 	 */
 	public Iterator<Result> listAllProducts() {
-		List<Result> resultList = new LinkedList<Result>();
-		Iterator<Product> iterator = products.getIterator();
-
-		// create a list of results corresponding to each entry in products
-		while (iterator.hasNext()) {
-			Product product = iterator.next();
-			Result result = new Result();
-			result.setProductFields(product);
-			resultList.add(result);
-		}
-
-		return resultList.iterator();
+		return new SafeProductIterator(products.getIterator());
 	}
 
 	/**
@@ -388,19 +364,7 @@ public class GroceryStore implements Serializable {
 	 * @return
 	 */
 	public Iterator<Result> listOutstandingOrders() {
-		List<Result> resultList = new LinkedList<Result>();
-		Iterator<Order> iterator = orders.iterator();
-
-		// create a list of results corresponding
-		// to each entry in orders
-		while (iterator.hasNext()) {
-			Order order = iterator.next();
-			Result result = new Result();
-			result.setOrderFields(order);
-			resultList.add(result);
-		}
-
-		return resultList.iterator();
+		return new SafeOrderIterator(orders.iterator());
 	}
 
 	public static boolean save() {
@@ -411,8 +375,8 @@ public class GroceryStore implements Serializable {
 			output.close();
 			file.close();
 			return true;
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
+		} catch (IOException expections) {
+			expections.printStackTrace();
 			return false;
 		}
 	}
@@ -430,11 +394,11 @@ public class GroceryStore implements Serializable {
 			input.close();
 			file.close();
 			return groceryStore;
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
+		} catch (IOException expections) {
+			expections.printStackTrace();
 			return null;
-		} catch (ClassNotFoundException cnfe) {
-			cnfe.printStackTrace();
+		} catch (ClassNotFoundException expections) {
+			expections.printStackTrace();
 			return null;
 		}
 	}

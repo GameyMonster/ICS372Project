@@ -7,7 +7,7 @@ import java.util.Calendar;
  * Represent a single Transaction (User visited the store, total price paid
  * during the visit)
  * 
- * @author Joshua
+ * @author Joshua Vang
  *
  */
 public class Transaction implements Serializable {
