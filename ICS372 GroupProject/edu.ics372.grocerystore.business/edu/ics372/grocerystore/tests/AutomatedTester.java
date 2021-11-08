@@ -1,4 +1,4 @@
-package edu.ics372.grocerystore.business.tests;
+package edu.ics372.grocerystore.tests;
 
 import edu.ics372.grocerystore.business.entities.Member;
 import edu.ics372.grocerystore.business.facade.GroceryStore;
