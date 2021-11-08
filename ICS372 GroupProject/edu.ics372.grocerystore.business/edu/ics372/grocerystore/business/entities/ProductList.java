@@ -11,16 +11,16 @@ public class ProductList implements Serializable {
 	private static ProductList productList;
 
 	/**
-	 * Private constructor for singleton.
+	 * Product list private constructor for singleton.
 	 */
 	private ProductList() {
 
 	}
 
 	/**
-	 * Returns single object, if it has not been created already.
+	 * Product list instance method, creates sole instance of product list.
 	 * 
-	 * @return instance of a ProductList
+	 * @return instance of productList
 	 */
 	public static ProductList getInstance() {
 		if (productList == null) {
@@ -30,32 +30,32 @@ public class ProductList implements Serializable {
 	}
 
 	/**
-	 * Returns iterator for the ProductList.
+	 * Returns an iterator for the product list.
 	 * 
-	 * @return
+	 * @return iterator
 	 */
 	public Iterator<Product> getIterator() {
 		return products.iterator();
 	}
 
 	/**
-	 * Add a product to ProductList
+	 * Adds the product to the list.
 	 * 
 	 * @param product
-	 * @return
+	 * @return boolean
 	 */
 	public boolean insertProduct(Product product) {
 		return products.add(product);
 	}
 
 	/**
-	 * Not having two products have the same name
+	 * Check if a name is unused by any of the products.
 	 * 
 	 * @param name
-	 * @return
+	 * @return boolean
 	 */
 	public boolean nameAvailable(String name) {
-		Iterator<Product> iterator = getInstance().getIterator();
+		Iterator<Product> iterator = products.iterator();
 		while (iterator.hasNext()) {
 			Product product = iterator.next();
 			if (product.getName().equals(name)) {
@@ -66,16 +66,16 @@ public class ProductList implements Serializable {
 	}
 
 	/**
-	 * Checking if the product exist from the ProductList
+	 * Check if a product exists.
 	 * 
 	 * @param productId
-	 * @return
+	 * @return boolean
 	 */
 	public boolean isProduct(String productId) {
-		Iterator<Product> iterator = getInstance().getIterator();
+		Iterator<Product> iterator = products.iterator();
 		while (iterator.hasNext()) {
 			Product product = iterator.next();
-			if (product.getId().equals(productId)) {
+			if (productId.equals(product.getId())) {
 				return true;
 			}
 		}
@@ -83,17 +83,17 @@ public class ProductList implements Serializable {
 	}
 
 	/**
-	 * Checking if the product is in stock
+	 * Check if a product's stock is sufficient.
 	 * 
 	 * @param productId
 	 * @param stock
-	 * @return
+	 * @return boolean
 	 */
 	public boolean hasStock(String productId, int stock) {
-		Iterator<Product> iterator = getInstance().getIterator();
+		Iterator<Product> iterator = products.iterator();
 		while (iterator.hasNext()) {
 			Product product = iterator.next();
-			if (product.getId().equals(productId)) {
+			if (productId.equals(product.getId())) {
 				return (product.getStock() >= stock);
 			}
 		}
@@ -101,16 +101,16 @@ public class ProductList implements Serializable {
 	}
 
 	/**
-	 * Search the Product ID on the ProductList
+	 * Search the list of by product ID.
 	 * 
 	 * @param productId
-	 * @return
+	 * @return Product
 	 */
 	public Product getProductById(String productId) {
-		Iterator<Product> iterator = getInstance().getIterator();
+		Iterator<Product> iterator = products.iterator();
 		while (iterator.hasNext()) {
 			Product product = iterator.next();
-			if (product.getId().equals(productId)) {
+			if (productId.equals(product.getId())) {
 				return product;
 			}
 		}
@@ -118,19 +118,27 @@ public class ProductList implements Serializable {
 	}
 
 	/**
-	 * Search the Product Name on the ProductList
+	 * Search the list of products by a specific name.
 	 * 
 	 * @param productName
-	 * @return
+	 * @return Product
 	 */
 	public Product getProductByName(String productName) {
-		Iterator<Product> iterator = getInstance().getIterator();
+		Iterator<Product> iterator = products.iterator();
 		while (iterator.hasNext()) {
 			Product product = iterator.next();
-			if (product.getName().equals(productName)) {
+			if (productName.equals(product.getName())) {
 				return product;
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * This prints the list of products.
+	 */
+	@Override
+	public String toString() {
+		return products.toString();
 	}
 }

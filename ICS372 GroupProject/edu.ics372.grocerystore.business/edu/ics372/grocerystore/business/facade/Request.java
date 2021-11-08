@@ -3,7 +3,9 @@ package edu.ics372.grocerystore.business.facade;
 import java.util.Calendar;
 
 public class Request extends DataTransfer {
-	private static Request request;
+	// singleton static instance
+	private static Request request = null;
+	// dates used in filtering member transactions
 	private Calendar startDate;
 	private Calendar endDate;
 
@@ -20,24 +22,44 @@ public class Request extends DataTransfer {
 	 * @return the only instance
 	 */
 	public static Request instance() {
-		if (request == null) {
-			request = new Request();
+		if (Request.request == null) {
+			Request.request = new Request();
 		}
-		return request;
+		return Request.request;
 	}
 
+	/**
+	 * Getter for startDate
+	 * 
+	 * @return start date for filtering member transactions
+	 */
 	public Calendar getStartDate() {
-		return startDate;
+		return this.startDate;
 	}
 
+	/**
+	 * Getter for endDate
+	 * 
+	 * @return end date for filtering member transactions
+	 */
+	public Calendar getEndDate() {
+		return this.endDate;
+	}
+
+	/**
+	 * Setter for startDate
+	 * 
+	 * @param startDate earliest date for filtering member transactions
+	 */
 	public void setStartDate(Calendar startDate) {
 		this.startDate = startDate;
 	}
 
-	public Calendar getEndDate() {
-		return endDate;
-	}
-
+	/**
+	 * Setter for endDate
+	 * 
+	 * @param endDate latest date for filtering member transactions
+	 */
 	public void setEndDate(Calendar endDate) {
 		this.endDate = endDate;
 	}

@@ -113,7 +113,7 @@ public class UserInterface {
 				if (tokenizer.hasMoreTokens()) {
 					return tokenizer.nextToken();
 				}
-			} catch (IOException ioe) {
+			} catch (IOException exception) {
 				System.exit(0);
 			}
 		} while (true);
@@ -132,7 +132,7 @@ public class UserInterface {
 				System.out.println(prompt);
 				String line = reader.readLine().trim();
 				return line;
-			} catch (IOException ioe) {
+			} catch (IOException exception) {
 				System.exit(0);
 			}
 		} while (true);
@@ -152,7 +152,7 @@ public class UserInterface {
 				String item = getToken(prompt);
 				Integer number = Integer.valueOf(item);
 				return number.intValue();
-			} catch (NumberFormatException nfe) {
+			} catch (NumberFormatException exception) {
 				System.out.println("Please input a number ");
 			}
 		} while (true);
@@ -171,7 +171,7 @@ public class UserInterface {
 				String item = getToken(prompt);
 				Double number = Double.valueOf(item);
 				return number.doubleValue();
-			} catch (NumberFormatException nfe) {
+			} catch (NumberFormatException exception) {
 				System.out.println("Please input a double ");
 			}
 		} while (true);
@@ -191,7 +191,7 @@ public class UserInterface {
 				DateFormat dateFormat = SimpleDateFormat.getDateInstance(DateFormat.SHORT);
 				date.setTime(dateFormat.parse(item));
 				return date;
-			} catch (Exception fe) {
+			} catch (Exception expection) {
 				System.out.println("Please input a date as mm/dd/yy");
 			}
 		} while (true);
@@ -210,7 +210,7 @@ public class UserInterface {
 				if (value >= EXIT && value <= HELP) {
 					return value;
 				}
-			} catch (NumberFormatException nfe) {
+			} catch (NumberFormatException exception) {
 				System.out.println("Enter a number");
 			}
 		} while (true);
@@ -319,8 +319,7 @@ public class UserInterface {
 		if (result.getResultCode() != Result.OPERATION_COMPLETED) {
 			System.out.println("Member could not be added");
 		} else {
-			System.out
-					.println("Member: " + result.getMemberName() + " with ID: " + result.getMemberID() + " was added.");
+			System.out.println("Member: " + result.getMemberName() + "  ID: " + result.getMemberID() + " was added.");
 		}
 	}
 
@@ -353,7 +352,7 @@ public class UserInterface {
 	 * Method to be called for getting information on members.
 	 */
 	public void getMemberInfo() {
-		Request.instance().setMemberName((getName("Enter name of member to get information on")));
+		Request.instance().setMemberName((getName("Enter the full name of member to get information")));
 
 		Iterator<Result> result = groceryStore.getMemberInfo(Request.instance());
 
@@ -370,25 +369,32 @@ public class UserInterface {
 	 * Method to be used for adding a new product.
 	 */
 	public void addProduct() {
-		Request.instance().setProductName(getName("Enter name of product"));
-		Request.instance().setProductPrice(Double.toString(getDouble("Enter price of product e.x. 10.99")));
-		Request.instance().setProductReorderLevel(Integer.toString(getNumber("Enter product reorder level")));
+		do {
+			Request.instance().setProductName(getName("Enter name of product"));
+			Request.instance().setProductPrice(Double.toString(getDouble("Enter price of product")));
+			Request.instance().setProductReorderLevel(Integer.toString(getNumber("Enter product reorder level")));
 
-		Result result = groceryStore.addProduct(Request.instance());
-		switch (result.getResultCode()) {
-		case Result.PRODUCT_NAME_INVALID:
-			System.out.println(
-					"Product could not be added. Product name: " + result.getProductName() + " is already in use.");
-			break;
-		case Result.OPERATION_COMPLETED:
-			System.out.println("Product successfully added. Name: " + result.getProductName() + " Price: "
-					+ result.getProductPrice() + " Reorder level: " + result.getProductReorderLevel() + " ID: "
-					+ result.getProductID());
-			break;
-		case Result.OPERATION_FAILED:
-			System.out.println("Product could not be added.");
-			break;
-		}
+			Result result = groceryStore.addProduct(Request.instance());
+
+			switch (result.getResultCode()) {
+			case Result.PRODUCT_NAME_INVALID:
+				System.out.println("Product name" + result.getProductName() + " is already on the list");
+				break;
+			case Result.OPERATION_COMPLETED:
+				System.out.println("Product added!");
+				System.out.println("Product Name: " + result.getProductName() + " Price: " + result.getProductPrice()
+						+ " Reorder level: " + result.getProductReorderLevel() + " ID: " + result.getProductID());
+				break;
+			case Result.OPERATION_FAILED:
+				System.out.println("Product could not be added!");
+				break;
+			default:
+				System.out.println("An error has occurred!");
+			}
+			if (!yesOrNo("Add more product?")) {
+				break;
+			}
+		} while (true);
 	}
 
 	/**
@@ -507,7 +513,7 @@ public class UserInterface {
 	 */
 	public void changePrice() {
 		Request.instance().setProductID(Integer.toString(getNumber("Enter product ID")));
-		Request.instance().setProductPrice(Double.toString(getDouble("Enter new price e.x. 10.99")));
+		Request.instance().setProductPrice(Double.toString(getDouble("Enter new price")));
 		Result result = groceryStore.changePrice(Request.instance());
 		switch (result.getResultCode()) {
 		case Result.PRODUCT_NOT_FOUND:
@@ -603,12 +609,12 @@ public class UserInterface {
 				if (groceryStore != null) {
 					System.out.println(" The file been successfully retrieved from the file GroceryStoreData \n");
 				} else {
-					System.out.println("File doesnt exist; creating new groceryStore");
+					System.out.println("File doesnt exist; creating new GroceryStore file");
 					groceryStore = GroceryStore.instance();
 				}
 			}
-		} catch (Exception cnfe) {
-			cnfe.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
 		}
 	}
 

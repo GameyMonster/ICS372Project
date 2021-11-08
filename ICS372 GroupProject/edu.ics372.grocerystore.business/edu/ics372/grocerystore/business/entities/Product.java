@@ -112,4 +112,16 @@ public class Product implements Serializable {
 	public static void retrieve(ObjectInputStream input) throws IOException, ClassNotFoundException {
 		idCounter = (int) input.readObject();
 	}
+
+	/**
+	 * Product toString method
+	 * 
+	 * @return string representation of Product
+	 */
+	@Override
+	public String toString() {
+		return "Product name " + this.name + "; id " + this.id + "; stock on hand " + this.stock + "; price $ "
+				+ this.price + "; reorder level " + this.reorderLevel;
+	}
+
 }

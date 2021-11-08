@@ -123,8 +123,8 @@ public class GroceryStore implements Serializable {
 	public Result addProduct(Request request) {
 
 		Result result = new Result();
-		Product product = products.getProductById(request.getProductID());
-		result.setProductID(request.getProductID());
+		Product product = products.getProductByName(request.getProductName());
+		result.setProductID(request.getProductName());
 		result.setProductStock(request.getProductStock());
 		if (!products.isProduct(request.getProductID())) {
 			result.setResultCode(Result.PRODUCT_NOT_FOUND);
