@@ -22,6 +22,7 @@ import edu.ics372.grocerystore.business.entities.Transaction;
 import edu.ics372.grocerystore.business.iterators.SafeMemberIterator;
 import edu.ics372.grocerystore.business.iterators.SafeOrderIterator;
 import edu.ics372.grocerystore.business.iterators.SafeProductIterator;
+import edu.ics372.grocerystore.tests.AutomatedTester;
 
 public class GroceryStore implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -123,8 +124,8 @@ public class GroceryStore implements Serializable {
 	public Result addProduct(Request request) {
 
 		Result result = new Result();
-		Product product = products.getProductByName(request.getProductName());
-		result.setProductID(request.getProductName());
+		Product product = products.getProductById(request.getProductID());
+		result.setProductID(request.getProductID());
 		result.setProductStock(request.getProductStock());
 		if (!products.isProduct(request.getProductID())) {
 			result.setResultCode(Result.PRODUCT_NOT_FOUND);
@@ -401,5 +402,15 @@ public class GroceryStore implements Serializable {
 			expections.printStackTrace();
 			return null;
 		}
+	}
+
+	/**
+	 * Invokes the AutomatedTest.
+	 * 
+	 * @return grocery after applying test methods, includes test values.
+	 */
+	public static GroceryStore autoTest() {
+		new AutomatedTester().testAll();
+		return GroceryStore.instance();
 	}
 }
